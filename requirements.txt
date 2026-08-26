@@ -1,0 +1,13 @@
+# Core: needed to run everything offline (no API key, no network).
+Pillow>=10.0
+numpy>=1.26
+
+# Dev: run the tests.
+pytest>=8.0
+
+# Web: the Streamlit demo app.
+streamlit>=1.30
+
+# Optional: only needed for `--real` (a real vision-capable LLM via LiteLLM).
+# Uncomment to install. Everything else works without it.
+# litellm>=1.0

@@ -1,0 +1,29 @@
+[project]
+name = "visionqa"
+version = "0.1.0"
+description = "A from-scratch multimodal vision app: describe images, ask questions, extract tables to CSV."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "Pillow>=10.0",
+    "numpy>=1.26",
+]
+
+[project.optional-dependencies]
+# Only needed when you run --real (a real vision-capable LLM).
+real = ["litellm>=1.0"]
+dev = ["pytest>=8.0"]
+web = ["streamlit>=1.30"]
+
+[project.scripts]
+visionqa = "visionqa.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["visionqa*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
