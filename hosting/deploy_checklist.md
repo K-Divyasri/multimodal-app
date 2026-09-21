@@ -5,7 +5,7 @@ haven't actually verified by running the command — "should work" isn't the sam
 
 ## Runs locally
 
-- [ ] Fresh virtual environment, dependencies installed cleanly (from `build_from_scratch/`):
+- [ ] Fresh virtual environment, dependencies installed cleanly (from the repo root):
       `python -m venv .venv ; .\.venv\Scripts\Activate.ps1` then `pip install -r requirements.txt`
 - [ ] Sample data exists: `python generate_data.py` writes 6 PNGs to `data/`
       (`bright_sky.png`, `dark_night.png`, `forest_green.png`, `solid_orange.png`,
@@ -28,7 +28,7 @@ haven't actually verified by running the command — "should work" isn't the sam
 
 ## Tests pass
 
-- [ ] `pytest` run from `build_from_scratch/` is all green (35 tests, all offline, no key,
+- [ ] `pytest` run from the repo root is all green (35 tests, all offline, no key,
       no network — including the ones that exercise the `--real` code path via the fake
       `litellm` fixture in `conftest.py`).
 - [ ] You ran it in the fresh venv, not just your everyday one, so you know the deps are complete.
@@ -44,8 +44,7 @@ haven't actually verified by running the command — "should work" isn't the sam
 
 ## Secrets are clean
 
-- [ ] The repo-root `.gitignore` contains `.env` and `build_from_scratch/.env`;
-      `build_from_scratch/.gitignore` contains `.env`, `.venv/`, `__pycache__/`,
+- [ ] The repo-root `.gitignore` contains `.env`, `.venv/`, `__pycache__/`,
       `.pytest_cache/`, `*.egg-info/`.
 - [ ] `git status` shows `.env` is NOT tracked.
 - [ ] `git ls-files` output contains NO `.env` (only `.env.example`). If it's there,
@@ -54,7 +53,7 @@ haven't actually verified by running the command — "should work" isn't the sam
 
 ## Sample data generated and committed (or regenerated on deploy)
 
-- [ ] Either: the 6 PNGs in `build_from_scratch/data/` are committed to the repo (they're
+- [ ] Either: the 6 PNGs in `data/` are committed to the repo (they're
       small and deterministic, so this is the simplest choice for a working fresh clone), OR
       the README clearly tells anyone who clones to run `python generate_data.py` first.
 - [ ] Whichever you chose, a fresh clone (or the deployed app) actually has working sample
@@ -81,7 +80,7 @@ haven't actually verified by running the command — "should work" isn't the sam
 ## App tested with at least one sample image
 
 - [ ] Deployed free to Streamlit Community Cloud (main file path
-      `build_from_scratch/app.py`) or Hugging Face Spaces.
+      `app.py`) or Hugging Face Spaces.
 - [ ] Opening the public URL loads the page with no errors.
 - [ ] You personally uploaded (or the app already has committed) at least one sample
       image — `bright_sky.png` is the best choice — and confirmed the metrics tiles and

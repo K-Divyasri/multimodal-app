@@ -24,12 +24,10 @@ key, no secrets, and doesn't even need `litellm` installed** to go green. Say so
 README; it's a selling point. Most "AI projects" can't be tested in CI at all because
 they need a paid key. Yours can, honestly, every push.
 
-The real code lives in the `build_from_scratch/` folder. Like the other projects on this
-roadmap, the repo root is the **whole project folder** (`20-multimodal-app`), and the
-code — package, tests, `app.py`, `requirements.txt` — sits one level down in
-`build_from_scratch/`. That's why several paths below carry a `build_from_scratch/`
-prefix. This project keeps the Streamlit app directly inside `build_from_scratch/app.py`
-(not under a `hosting/streamlit_app/` folder) — so wherever you see `app.py` below, that's
+The real code lives at the repo root: package, tests, `app.py`, and `requirements.txt`
+sit directly next to this `hosting/` folder, so no path below needs a subfolder prefix.
+This project keeps the Streamlit app at `app.py`
+(not under a `hosting/streamlit_app/` folder) - so wherever you see `app.py` below, that's
 where it lives; there's no separate copy to keep in sync.
 
 ---
@@ -73,13 +71,11 @@ git config --global user.email "mathuransada@gmail.com"
 
 Some files belong on GitHub. Some must never leave your laptop. The line between them is
 a file called `.gitignore` — a plain-text list of things Git pretends don't exist.
-`build_from_scratch/` already ships one. Add a root-level `.gitignore` too (there isn't
-one yet, since the repo root is the whole project folder, not `build_from_scratch/`):
+The repo root already ships one. Confirm it has at least these lines:
 
 ```
-# 20-multimodal-app/.gitignore (repo root)
+# .gitignore (repo root)
 .env
-build_from_scratch/.env
 __pycache__/
 *.pyc
 .venv/
@@ -89,7 +85,7 @@ venv/
 .ipynb_checkpoints/
 ```
 
-`build_from_scratch/.gitignore` already covers `.env`, `__pycache__/`, `*.pyc`,
+That `.gitignore` already covers `.env`, `__pycache__/`, `*.pyc`,
 `.pytest_cache/`, `.venv/`, `venv/`, `*.egg-info/`, `build/`, `dist/` — confirm it does
 before you push.
 
@@ -99,7 +95,7 @@ Here's what matters and why:
   Gemini or Anthropic key. **A key is a password.** Commit it and it's on the public
   internet forever — bots scrape GitHub for leaked keys within minutes of a push, and
   someone else runs up a bill on your account. `.env` never gets committed, ever. The repo
-  ships `build_from_scratch/.env.example` instead — variable names, blank values, safe to
+  ships `.env.example` instead - variable names, blank values, safe to
   commit, meant to be committed.
 - **`data/*.png`** — unlike a generated database, this project's sample images are small
   (six PNGs, a few KB each) and deterministic. You can commit them so the repo works the
@@ -120,8 +116,8 @@ machine-specific junk stay out.**
 
 ## Step 2 — Make the local repo and commit
 
-The repo root is the **project folder**, `20-multimodal-app/` — the one that contains
-`build_from_scratch/`, `knowledge/`, `notebooks/`, `labs/`, and this `hosting/` folder.
+The repo root is the **project folder** - the one that contains
+`visionqa/`, `tests/`, `data/`, and this `hosting/` folder.
 Open PowerShell *there*.
 
 ```powershell
@@ -186,11 +182,10 @@ and a closing line of what you'll be able to say in an interview. Once you deplo
 ### 4a. Add a screenshot — genuinely high value here
 
 A picture proves the app is real and running. Start it locally, upload
-`build_from_scratch/data/bright_sky.png`, ask "what color is this?", and capture the
+`data/bright_sky.png`, ask "what color is this?", and capture the
 offline metrics tiles plus the answer:
 
 ```powershell
-cd build_from_scratch
 streamlit run app.py
 ```
 
@@ -214,7 +209,7 @@ your laptop. GitHub shows a green checkmark next to commits when they pass.
 
 This project's genuine selling point, worth repeating in your README: **the tests run
 offline, including the ones that exercise the real-model code path**, because
-`build_from_scratch/conftest.py` installs a fake `litellm` module for those tests. CI
+`conftest.py` installs a fake `litellm` module for those tests. CI
 doesn't need `litellm` installed at all, let alone an API key.
 
 Copy the ready-made workflow from this folder into the right spot:
@@ -239,7 +234,7 @@ Once it's green, grab the status badge: on the workflow's Actions page, the `...
 
 ## Step 6 — Deploy the offline Streamlit app
 
-This is the payoff. `build_from_scratch/app.py` already runs keyless by default — it
+This is the payoff. `app.py` already runs keyless by default - it
 computes the offline features locally and only calls a real model if you tick the sidebar
 checkbox and paste in a key for that session. That's exactly what makes it free and safe
 to host publicly: a stranger opening your link can play with the whole offline experience
@@ -250,7 +245,6 @@ key in the sidebar.
 **Try it locally first.** If it runs on your laptop, it'll run hosted:
 
 ```powershell
-cd build_from_scratch
 pip install -r requirements.txt
 streamlit run app.py
 ```
@@ -264,9 +258,8 @@ It opens a browser tab at `http://localhost:8501`. Upload one of the sample PNGs
    GitHub (or go straight to https://share.streamlit.io).
 2. Click **New app**, then **Deploy a public app from GitHub**.
 3. Pick your `multimodal-app` repo and the `main` branch.
-4. Set **Main file path** to `build_from_scratch/app.py` — this is the field people get
-   wrong most often. The app lives one level down, not at the repo root.
-5. Click **Deploy**. Streamlit reads `build_from_scratch/requirements.txt` automatically,
+4. Set **Main file path** to `app.py`. The app lives at the repo root.
+5. Click **Deploy**. Streamlit reads `requirements.txt` automatically,
    installs `Pillow`, `numpy`, and `streamlit`, builds, and gives you a public
    `*.streamlit.app` URL.
 
@@ -281,11 +274,11 @@ this: its first real line is
 sys.path.insert(0, str(Path(__file__).parent))
 ```
 
-which adds the app's own folder — `build_from_scratch/` — to the import path, right where
+which adds the app's own folder - the repo root - to the import path, right where
 `visionqa/` sits next to `app.py`. Since you pointed Streamlit Cloud at
-`build_from_scratch/app.py`, this resolves cleanly with no extra work on your part.
+`app.py`, this resolves cleanly with no extra work on your part.
 
-**One dependency note.** `build_from_scratch/requirements.txt` lists `litellm` as an
+**One dependency note.** `requirements.txt` lists `litellm` as an
 optional, commented-out line (only needed for `--real`). If you never uncomment it,
 Streamlit Cloud simply won't have `litellm` installed — which is fine, because the sidebar
 checkbox only sets `GEMINI_API_KEY`/routes through `qa.ask(..., offline=False)`, and if
@@ -308,19 +301,19 @@ Hugging Face **Spaces** also hosts Streamlit apps free.
    # app.py -- entry point for Hugging Face Spaces; runs the real app.
    import runpy, sys
    from pathlib import Path
-   sys.path.insert(0, str(Path(__file__).parent / "build_from_scratch"))
-   runpy.run_path("build_from_scratch/app.py", run_name="__main__")
+   sys.path.insert(0, str(Path(__file__).parent))
+   runpy.run_path("app.py", run_name="__main__")
    ```
 
    and a top-level `requirements.txt` with at least `streamlit`, `Pillow`, `numpy` (copy
-   the non-comment lines from `build_from_scratch/requirements.txt`).
+   the non-comment lines from `requirements.txt`).
 
 4. Push your project to the Space's Git remote (it gives you the URL), or use the web UI
    to upload the files. The Space builds and gives you a public URL like
    `https://huggingface.co/spaces/YOURNAME/visionqa`.
 
 Streamlit Cloud (6a) is less fiddly because it points straight at
-`build_from_scratch/app.py` and needs no wrapper file. Use it unless you specifically want
+`app.py` and needs no wrapper file. Use it unless you specifically want
 a Space.
 
 ### 6c. If you want the hosted app to call a REAL model by default
@@ -379,7 +372,7 @@ blue" side by side, plus a green CI badge, is a genuinely strong portfolio page.
 the provider (Google AI Studio or Anthropic console) — then:
 
 ```powershell
-git rm --cached build_from_scratch\.env
+git rm --cached .env
 git commit -m "Remove committed .env"
 git push
 ```
@@ -405,14 +398,14 @@ terminal. Easiest fix: install the GitHub CLI from https://cli.github.com, run
 
 **CI is red but the tests pass on my laptop.** Read the Actions log bottom-up. The usual
 cause is a dependency you have installed locally but forgot to list in
-`build_from_scratch/requirements.txt`. It won't be a missing API key — the tests are
+`requirements.txt`. It won't be a missing API key - the tests are
 offline by design, with a fake `litellm` standing in where needed.
 
 **The deployed app shows `ModuleNotFoundError: visionqa`.** Make sure the **Main file
-path** on Streamlit Cloud is `build_from_scratch/app.py`, not just `app.py`, so the app's
+path** on Streamlit Cloud is `app.py` (at the repo root), so the app's
 own folder — where `visionqa/` lives — lands on the import path.
 
 **The deployed app can't find sample images.** That's expected if you didn't commit
-`build_from_scratch/data/`. Either commit the six PNGs (they're small — see Step 1), or
+`data/`. Either commit the six PNGs (they're small - see Step 1), or
 tell visitors to upload their own image; the app works either way since it only ever reads
 whatever file the uploader gives it.
